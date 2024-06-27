@@ -1,19 +1,25 @@
 # Start from the latest Swift nightly main toolchain
-# Starting as root - 
+# generally containers start as root - 
 #
 FROM swiftlang/swift:nightly-main-jammy
-ARG user=appuser
-ARG group=appuser
+
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends \
+  sudo 
+  
+ARG user=devuser
+ARG group=devuser
 ARG uid=1000
 ARG gid=1000
 RUN groupadd -g ${gid} ${group}
 RUN useradd -u ${uid} -g ${group} -s /bin/sh -m ${user} # <--- the '-m' create a user home directory
-
+RUN echo "devuser:devuser" | chpasswd && adduser ${user} sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # Install ESP-IDF dependencies
 RUN apt-get update \
   && apt-get install --yes --no-install-recommends \
-    sudo vim git wget flex bison gperf python3 python3-pip python3-venv \
+    vim git wget flex bison gperf python3 python3-pip python3-venv \
     ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
   
 # Install ESP-Matter dependencies
@@ -25,7 +31,9 @@ RUN apt-get update \
 
 # Install CMake >= 3.29
 RUN pip install --upgrade cmake
-USER appuser
+
+# we can switch to devuser for the rest of the install
+USER devuser
 
 # Download ESP-IDF
 RUN mkdir -p ~/esp \
