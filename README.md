@@ -18,4 +18,4 @@ Then run the following:
 
 `docker run -it --rm --cpus 4 --memory 8G --name swift-matter-env -v .:/code:z swift-matter-env`
 
-You should be in the container now. The prompt will be devuser@1234897 or similar. `whoami` will be 'devuser' with a uid of 1000 and a gid of 1000. Those can bechanged in the Dockerfile and rebuild the image. You can use sudo with a password prompt.
+You should be in the container now. The prompt will be devuser@1234897 or similar. `whoami` will be 'devuser' with a uid of 1000 and a gid of 1000. Those can be changed in the Dockerfile and then rebuild the image. You can use sudo without getting a password prompt.
